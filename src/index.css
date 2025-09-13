@@ -73,6 +73,11 @@ html, body, #root {
   height: 100%;
 }
 
+/* Mobile viewport height custom property */
+:root {
+  --mobile-vh: 1vh;
+}
+
 /* Enable scrolling and prevent horizontal overflow */
 html {
   overflow-x: hidden;
@@ -265,6 +270,7 @@ video {
 @media (max-width: 767px) {
   .vignette-effect {
     height: 100dvh;
+    height: calc(var(--mobile-vh) * 100);
   }
 }
 .edge-blur {
@@ -286,6 +292,7 @@ video {
 @media (max-width: 767px) {
   .edge-blur {
     height: 100dvh;
+    height: calc(var(--mobile-vh) * 100);
   }
 }
 .chromatic-aberration {
@@ -375,6 +382,7 @@ video {
 @media (max-width: 767px) {
   .film-grain {
     height: 100dvh;
+    height: calc(var(--mobile-vh) * 100);
   }
 }
 @keyframes grain-move {

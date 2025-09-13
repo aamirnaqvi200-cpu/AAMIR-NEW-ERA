@@ -8,6 +8,14 @@ import { LazyVideo } from './components/LazyVideo';
 import { useThrottledMouseTracking } from './hooks/useThrottledMouseTracking';
 import { MobileBadgeCarousel } from './components/MobileBadgeCarousel';
 
+// Mobile viewport height handler
+function setMobileVH() {
+  if (window.innerWidth < 768) {
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--mobile-vh', `${vh}px`);
+  }
+}
+
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 
@@ -128,21 +136,28 @@ function App() {
 
   // Handle mobile viewport height
   useEffect(() => {
+    // Initialize mobile viewport height
+    setMobileVH();
+    
     const updateMobileVH = () => {
       if (window.innerWidth < 768) {
         setMobileVH(window.innerHeight);
+        // Also update CSS custom property
+        setMobileVH();
       } else {
         setMobileVH(null);
       }
     };
 
-    updateMobileVH();
     window.addEventListener('resize', updateMobileVH);
     window.addEventListener('orientationchange', updateMobileVH);
+    // Also listen for viewport changes (URL bar hide/show)
+    window.addEventListener('scroll', setMobileVH);
 
     return () => {
       window.removeEventListener('resize', updateMobileVH);
       window.removeEventListener('orientationchange', updateMobileVH);
+      window.removeEventListener('scroll', setMobileVH);
     };
   }, []);
   // Handle splash screen completion
@@ -296,8 +311,8 @@ function App() {
         ref={heroRef}
         className="relative w-full overflow-hidden bg-transparent chromatic-aberration"
         style={{ 
-          minHeight: mobileVH ? `${mobileVH}px` : '100vh',
-          height: mobileVH ? `${mobileVH}px` : '100vh'
+          minHeight: window.innerWidth < 768 ? 'calc(var(--mobile-vh) * 100)' : '100vh',
+          height: window.innerWidth < 768 ? 'calc(var(--mobile-vh) * 100)' : '100vh'
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -513,7 +528,7 @@ function App() {
         ref={portfolioSectionRef} 
         className="relative w-full bg-white z-[100] rounded-t-[3rem] rounded-b-[3rem] opacity-100"
         style={{ 
-          minHeight: mobileVH ? `${mobileVH}px` : '100vh',
+          minHeight: window.innerWidth < 768 ? 'calc(var(--mobile-vh) * 100)' : '100vh',
           zIndex: 9999 
         }}
       >
@@ -613,7 +628,7 @@ function App() {
           id="contact-section"
           className={`fixed bottom-0 left-0 right-0 w-full overflow-hidden flex flex-col items-center justify-center z-30 bg-transparent opacity-0 animate-fade-in-delayed`}
           style={{
-            height: mobileVH ? `${mobileVH}px` : '100vh',
+            height: window.innerWidth < 768 ? 'calc(var(--mobile-vh) * 100)' : '100vh',
             animationDelay: '0.2s', 
             animationFillMode: 'forwards',
             pointerEvents: 'auto'

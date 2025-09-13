@@ -60,7 +60,7 @@ export function SplashScreen({ onLoadComplete }: SplashScreenProps) {
     <div 
       className="fixed inset-0 bg-black z-50 flex items-center justify-center"
       style={{ 
-        height: mobileVH ? `${mobileVH}px` : '100vh',
+        height: window.innerWidth < 768 ? 'calc(var(--mobile-vh) * 100)' : '100vh',
         pointerEvents: 'auto'
       }}
     >
