@@ -76,12 +76,16 @@ html, body, #root {
 /* Enable scrolling and prevent horizontal overflow */
 html {
   overflow-x: hidden;
+  /* Only hide overflow-y on desktop, allow natural scrolling on mobile */
+  overflow-y: auto;
   scroll-behavior: smooth;
   height: auto;
 }
 
 body {
-  overflow-x: hidden; 
+  overflow-x: hidden;
+  /* Enable smooth scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
   height: auto;
 }
 
@@ -247,6 +251,8 @@ video {
   height: 100%;
   pointer-events: none;
   z-index: 1000;
+  /* Use dvh on mobile for better viewport handling */
+  height: 100vh;
   background: radial-gradient(
     ellipse at center,
     transparent 0%,
@@ -256,6 +262,11 @@ video {
   );
 }
 
+@media (max-width: 767px) {
+  .vignette-effect {
+    height: 100dvh;
+  }
+}
 .edge-blur {
   position: fixed;
   top: 0;
@@ -264,12 +275,19 @@ video {
   height: 100%;
   pointer-events: none;
   z-index: 1000;
+  /* Use dvh on mobile for better viewport handling */
+  height: 100vh;
   background: 
     linear-gradient(to right, rgba(0,0,0,0.1) 0%, transparent 15%, transparent 85%, rgba(0,0,0,0.1) 100%),
     linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, transparent 15%, transparent 85%, rgba(0,0,0,0.1) 100%);
   backdrop-filter: blur(0px);
 }
 
+@media (max-width: 767px) {
+  .edge-blur {
+    height: 100dvh;
+  }
+}
 .chromatic-aberration {
   position: relative;
 }
@@ -343,6 +361,8 @@ video {
   height: 100%;
   pointer-events: none;
   z-index: 998;
+  /* Use dvh on mobile for better viewport handling */
+  height: 100vh;
   opacity: 0.02;
   background-image: 
     radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 1px, transparent 1px),
@@ -352,6 +372,11 @@ video {
   animation: grain-move 20s linear infinite;
 }
 
+@media (max-width: 767px) {
+  .film-grain {
+    height: 100dvh;
+  }
+}
 @keyframes grain-move {
   0%, 100% {
     transform: translate(0, 0);

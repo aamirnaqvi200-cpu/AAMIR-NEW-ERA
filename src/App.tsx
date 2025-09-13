@@ -13,6 +13,14 @@ gsap.registerPlugin(ScrollTrigger);
 
 // Check if device is mobile
 const isMobile = () => window.innerWidth < 768;
+
+// Mobile viewport height helper
+const getMobileVH = () => {
+  if (typeof window !== 'undefined' && window.innerWidth < 768) {
+    return window.innerHeight;
+  }
+  return null;
+};
 interface TestimonialBadge {
   image: string;
   position: { top: string; left: string };
@@ -113,10 +121,30 @@ function App() {
   const newScrollIndicatorRef = useRef<HTMLDivElement>(null);
   const fixedBackgroundRef = useRef<HTMLDivElement>(null); 
   const portfolioRef = useRef<HTMLDivElement>(null);
+  const [mobileVH, setMobileVH] = useState<number | null>(null);
 
   // Use throttled mouse tracking hook
   const { mousePosition, handleMouseEnter, handleMouseLeave } = useThrottledMouseTracking(!isMobile());
 
+  // Handle mobile viewport height
+  useEffect(() => {
+    const updateMobileVH = () => {
+      if (window.innerWidth < 768) {
+        setMobileVH(window.innerHeight);
+      } else {
+        setMobileVH(null);
+      }
+    };
+
+    updateMobileVH();
+    window.addEventListener('resize', updateMobileVH);
+    window.addEventListener('orientationchange', updateMobileVH);
+
+    return () => {
+      window.removeEventListener('resize', updateMobileVH);
+      window.removeEventListener('orientationchange', updateMobileVH);
+    };
+  }, []);
   // Handle splash screen completion
   const handleLoadComplete = () => {
     setIsLoading(false);
@@ -236,9 +264,9 @@ function App() {
     <div className="relative">
      
       {/* Cinematic Effects Overlay */}
-      <div className="vignette-effect" />
-      <div className="edge-blur" />
-      <div className="film-grain" />
+      <div className="vignette-effect" style={{ pointerEvents: 'none' }} />
+      <div className="edge-blur" style={{ pointerEvents: 'none' }} />
+      <div className="film-grain" style={{ pointerEvents: 'none' }} />
        
       {/* Splash Screen */}
       {isLoading && <SplashScreen onLoadComplete={handleLoadComplete} />}
@@ -266,7 +294,11 @@ function App() {
       {/* Main Hero Section */} 
       <div 
         ref={heroRef}
-        className="relative min-h-screen w-full overflow-hidden bg-transparent chromatic-aberration"
+        className="relative w-full overflow-hidden bg-transparent chromatic-aberration"
+        style={{ 
+          minHeight: mobileVH ? `${mobileVH}px` : '100vh',
+          height: mobileVH ? `${mobileVH}px` : '100vh'
+        }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -454,18 +486,19 @@ function App() {
         {/* Floating Testimonial Badges */}
         {showTestimonials && (
           <div
-    className="
-      fixed 
-      top-10       /* distance from top */
-      left-10      /* distance from left */
-      right-24     /* distance from right */
-      bottom-10    /* distance from bottom */ 
-      z-0 
-      pointer-events-none 
-      overflow-hidden 
-      transform -translate-y-20
-    "
-  >
+            className="
+              fixed 
+              top-10       /* distance from top */
+              left-10      /* distance from left */
+              right-24     /* distance from right */
+              bottom-10    /* distance from bottom */ 
+              z-0 
+              pointer-events-none 
+              overflow-hidden 
+              transform -translate-y-20
+            "
+            style={{ pointerEvents: 'none' }}
+          >
             <div className="hidden md:block h-[20%] w-[20%]">
               {testimonialBadges.map((badge, index) => (
                 <TestimonialBadge key={index} badge={badge} />
@@ -478,8 +511,11 @@ function App() {
       {/* Portfolio Section */}
       <div 
         ref={portfolioSectionRef} 
-        className="relative min-h-screen w-full bg-white z-[100] rounded-t-[3rem] rounded-b-[3rem] opacity-100"
-        style={{ zIndex: 9999 }}
+        className="relative w-full bg-white z-[100] rounded-t-[3rem] rounded-b-[3rem] opacity-100"
+        style={{ 
+          minHeight: mobileVH ? `${mobileVH}px` : '100vh',
+          zIndex: 9999 
+        }}
       >
 
         <div className="container mx-auto px-6 py-20">
@@ -575,10 +611,12 @@ function App() {
       {showContact && (
         <div
           id="contact-section"
-          className={`fixed bottom-0 left-0 right-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center z-30 bg-transparent opacity-0 animate-fade-in-delayed`}
+          className={`fixed bottom-0 left-0 right-0 w-full overflow-hidden flex flex-col items-center justify-center z-30 bg-transparent opacity-0 animate-fade-in-delayed`}
           style={{
+            height: mobileVH ? `${mobileVH}px` : '100vh',
             animationDelay: '0.2s', 
-            animationFillMode: 'forwards'
+            animationFillMode: 'forwards',
+            pointerEvents: 'auto'
           }}
         > 
          {/* Main Heading */}

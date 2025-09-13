@@ -43,7 +43,10 @@ export function MobileBadgeCarousel() {
   const currentBadge = badges[currentBadgeIndex];
 
   return (
-    <div className="fixed top-8 left-1/2 transform -translate-x-1/2 z-20 md:hidden">
+    <div 
+      className="fixed top-8 left-1/2 transform -translate-x-1/2 z-20 md:hidden"
+      style={{ pointerEvents: 'none' }}
+    >
       <div className="relative w-300 h-300">
         {/* Base Badge PNG */}
         <img

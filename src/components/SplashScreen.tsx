@@ -7,6 +7,27 @@ interface SplashScreenProps {
 export function SplashScreen({ onLoadComplete }: SplashScreenProps) {
   const [progress, setProgress] = useState(0);
   const [loadingText, setLoadingText] = useState('LOADING');
+  const [mobileVH, setMobileVH] = useState<number | null>(null);
+
+  // Handle mobile viewport height
+  useEffect(() => {
+    const updateMobileVH = () => {
+      if (window.innerWidth < 768) {
+        setMobileVH(window.innerHeight);
+      } else {
+        setMobileVH(null);
+      }
+    };
+
+    updateMobileVH();
+    window.addEventListener('resize', updateMobileVH);
+    window.addEventListener('orientationchange', updateMobileVH);
+
+    return () => {
+      window.removeEventListener('resize', updateMobileVH);
+      window.removeEventListener('orientationchange', updateMobileVH);
+    };
+  }, []);
 
   useEffect(() => {
     const loadingTexts = ['LOADING', 'PREPARING', 'CRAFTING', 'BUILDING'];
@@ -36,7 +57,13 @@ export function SplashScreen({ onLoadComplete }: SplashScreenProps) {
   }, [onLoadComplete]);
 
   return (
-    <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
+    <div 
+      className="fixed inset-0 bg-black z-50 flex items-center justify-center"
+      style={{ 
+        height: mobileVH ? `${mobileVH}px` : '100vh',
+        pointerEvents: 'auto'
+      }}
+    >
   
    
 
