@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import VideoThumbnail from "./components/VideoThumbnail";
 import { Mail, Instagram, Linkedin } from 'lucide-react';
 import { gsap } from 'gsap';
